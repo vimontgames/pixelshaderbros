@@ -40,7 +40,7 @@ public class Bullet : MonoBehaviour
     {
         if (col.gameObject != owner)
         {
-            if (col.gameObject.name.Contains("Player"))
+            if (col.gameObject.tag == "Player")
             {
                 float life = col.gameObject.GetComponent<PlayerUI>().life;    // get hit
                 if (life > 0.0f)
@@ -51,9 +51,14 @@ public class Bullet : MonoBehaviour
 
                 if (null != owner && owner.name.Contains("Player"))
                 {
-                    owner.GetComponent<PlayerUI>().score += 10;             // get points
+                    owner.GetComponent<PlayerUI>().score += 1;             // get points
                 }
-            }            
+            }  
+            else if (col.gameObject.tag == "Ennemy")
+            {
+                col.gameObject.GetComponent<Ennemy>().getHit(1.0f);
+                owner.GetComponent<PlayerUI>().score += 100;             // get points
+            }
         }
     }
 }

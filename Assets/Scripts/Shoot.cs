@@ -30,12 +30,14 @@ public class Shoot : MonoBehaviour
 
         var pad = gamepads[(int)playerIndex];
 
+        float shootWait = Mathf.Lerp(100.0f * wait, wait, GetComponent<PlayerUI>().life / 100.0f);
+
         if (pad.buttonWest.isPressed)
         {
             var t = Time.realtimeSinceStartup;
             var delta = t - lastTime;
 
-            if (delta > wait)
+            if (delta > shootWait)
             {
                 lastTime = Time.realtimeSinceStartup;
 

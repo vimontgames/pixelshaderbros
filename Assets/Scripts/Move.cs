@@ -28,16 +28,19 @@ public class Move : MonoBehaviour
     private float gravityValue = -9.81f;
 
     private float _angle = 0.0f * Mathf.Deg2Rad;
+    private Vector3 _depart;
 
     public AudioSource jump;
 
     void Start()
     {
-      
+        _depart = transform.position;
     }
 
     void Update()
     {
+        float speedFactor = 0.25f + 0.75f * GetComponent<PlayerUI>().life / 100.0f;
+
         groundedPlayer = controller.isGrounded;
         if (groundedPlayer && playerVelocity.y < 0)
         {
@@ -63,7 +66,7 @@ public class Move : MonoBehaviour
         if (leftStick.magnitude > eps)
         {
             float forward = (-leftStick.y);
-            moveDir = new Vector3(Mathf.Cos(_angle), 0.0f, -Mathf.Sin(_angle)) * forward * (forward > 0 ? moveForwardSpeed : moveBackwardSpeed) * Time.deltaTime;
+            moveDir = new Vector3(Mathf.Cos(_angle), 0.0f, -Mathf.Sin(_angle)) * speedFactor * forward * (forward > 0 ? moveForwardSpeed : moveBackwardSpeed) * Time.deltaTime;
         
             _angle += leftStick.x * rotationSpeed * Time.deltaTime;
         
@@ -81,7 +84,6 @@ public class Move : MonoBehaviour
         if (pad.buttonSouth.isPressed && groundedPlayer)
         {
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
-
             jump.Play();
         }
 
@@ -89,10 +91,11 @@ public class Move : MonoBehaviour
 
         controller.Move(playerVelocity * Time.deltaTime);
 
-        if (transform.position.y < -1024)
+        if (transform.position.y < -255)
         {
-            transform.position += new Vector3(0, 1024, 0);
+            transform.position = _depart + new Vector3(0,8,0);
             playerVelocity.y = 0;
+            GetComponent<PlayerUI>().life = 100;
         }
     }
 }

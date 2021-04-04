@@ -58,7 +58,7 @@ public class PlayerUI : MonoBehaviour
         }
 
         // restore life
-        life += 1.00f * Time.deltaTime;
+        life += 10.00f * Time.deltaTime;
         life = Mathf.Clamp(life, 0.0f, 100.0f);
     }
 }
