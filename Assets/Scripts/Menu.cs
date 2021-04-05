@@ -6,8 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
-    public GameObject cam;
+    public GameObject menuCam;
     public GameObject canvas;
+    public GameObject mapCam;
 
     bool loaded = false;
     Scene scene;
@@ -17,8 +18,11 @@ public class Menu : MonoBehaviour
 
     void Start()
     {
-        if (null != cam)
-            cam.SetActive(true);
+        if (null != menuCam)
+            menuCam.SetActive(true);
+
+        if (null != mapCam)
+            mapCam.SetActive(false);
 
         if (null != canvas)
             canvas.SetActive(true);
@@ -29,7 +33,7 @@ public class Menu : MonoBehaviour
             if (null == player)
                 continue;
 
-            player.SetActive(false);
+            player.transform.Find("Canvas").gameObject.SetActive(false);
 
             string playerCameraName = "Player " + i + " Camera";
             GameObject playerCam = GameObject.Find(playerCameraName);
@@ -42,8 +46,11 @@ public class Menu : MonoBehaviour
 
     void initGame()
     {
-        if (null != cam)
-            cam.SetActive(false);
+        if (null != menuCam)
+            menuCam.SetActive(false);
+
+        if (null != mapCam)
+            mapCam.SetActive(true);
 
         if (null != canvas)
             canvas.SetActive(false);
@@ -54,11 +61,14 @@ public class Menu : MonoBehaviour
             if (null == player)
                 continue;
 
-            var script = player.GetComponent<Spawn>();
-            if (null != script)
-                script.OnSpawn(player, i, playerCount);
+            var playerAI = player.GetComponent<Player>();
+            if (null != playerAI)
+            {
+                playerAI.SetupPlayerViewportAndCamera(player, i, playerCount);
+                playerAI.update = true;
+            }
 
-            player.SetActive(true);
+            player.transform.Find("Canvas").gameObject.SetActive(true);
         }
     }
 

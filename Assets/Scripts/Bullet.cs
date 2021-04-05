@@ -6,7 +6,7 @@ public class Bullet : MonoBehaviour
 {
     public GameObject owner;
     public bool update = true;
-    public float life = 3.0f;
+    public float life = 2.5f;
     public float scale = 0.5f;
     float spawnTime;
 
@@ -38,26 +38,34 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        if (col.gameObject != owner)
+        //if (col.gameObject != owner)
         {
             if (col.gameObject.tag == "Player")
             {
-                float life = col.gameObject.GetComponent<PlayerUI>().life;    // get hit
+                float life = col.gameObject.GetComponent<Player>().life;    
                 if (life > 0.0f)
                 {
-                    life -= 1.0f;
-                    col.gameObject.GetComponent<PlayerUI>().life = life;
+                    life -= 5.0f;
+                    col.gameObject.GetComponent<Player>().life = life;
                 }
 
                 if (null != owner && owner.name.Contains("Player"))
-                {
-                    owner.GetComponent<PlayerUI>().score += 1;             // get points
-                }
+                    owner.GetComponent<Player>().score += 1;             
+
             }  
             else if (col.gameObject.tag == "Ennemy")
             {
-                col.gameObject.GetComponent<Ennemy>().getHit(1.0f);
-                owner.GetComponent<PlayerUI>().score += 100;             // get points
+                if (col.gameObject.GetComponent<Ennemy>().getHit(5.0f))
+                    owner.GetComponent<Player>().score += 1000;    
+                else
+                    owner.GetComponent<Player>().score += 10;     
+            }
+
+            var cont = col.gameObject.GetComponent<CharacterController>();
+            if (null != cont)
+            {
+                Vector3 delta = col.transform.position - transform.position;
+                cont.Move(new Vector3(delta.x, 0.0f, delta.z).normalized);
             }
         }
     }

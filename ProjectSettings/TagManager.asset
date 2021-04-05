@@ -19,6 +19,7 @@ TagManager:
   - Player 0
   - Player 1
   - Player 2
+  - Player 3
   - 
   - 
   - 
@@ -35,9 +36,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
+  - Menu
+  - Map
   m_SortingLayers:
   - name: Default
     uniqueID: 0

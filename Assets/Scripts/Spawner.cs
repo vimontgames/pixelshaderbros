@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ItemSpawn : MonoBehaviour
+public class Spawner : MonoBehaviour
 {
     public GameObject model;
     private GameObject instance;

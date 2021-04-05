@@ -1,190 +1,241 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Scripts/Player.inputactions'
-
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
+using Cinemachine;
+using UnityEngine.UI;
 
-public class @Player : IInputActionCollection, IDisposable
+public class Player : MonoBehaviour
 {
-    public InputActionAsset asset { get; }
-    public @Player()
+    public string nickname = "PlayerName";
+    public uint playerIndex = 0;
+    public Color color = new Color(1, 1, 1);
+    public int score = 0;
+    public float life = 100;
+    public CharacterController controller;
+    public bool update = false;
+
+    [Header("Camera")]
+    public CinemachineFreeLook freeLookCam;
+    public GameObject playerCam;
+    public float cameraRotationSpeed = 8.0f;
+    public float moveForwardSpeed = 5.0f;
+    public float moveBackwardSpeed = 3.0f;
+    public float rotationSpeed = 1.5f;
+    public float playerSmoothTime = 0.25f;
+    public float cameraSmoothTime = 3.0f;
+
+    private float playerTurnSmoothVelocity;
+    private float cameraTurnSmoothVelocity;
+
+    private bool groundedPlayer;
+    private Vector3 playerVelocity = new Vector3(0,0,0);
+    private float jumpHeight = 4.0f;
+    private float gravityValue = -9.81f;
+    private float _angle = 0.0f * Mathf.Deg2Rad;
+    private Vector3 _depart;
+
+    [Header("Shoot")]
+    public GameObject bullet;
+    public float speed = 50.0f;
+    public float wait = 0.1f;
+
+    private float lastTime = 0;
+
+    [Header("Sound")]
+    public AudioSource jump;
+    public AudioSource zap;
+
+    void Start()
     {
-        asset = InputActionAsset.FromJson(@"{
-    ""name"": ""Player"",
-    ""maps"": [
+        _depart = transform.position;
+    }
+
+    public void SetupPlayerViewportAndCamera(GameObject player, int _index, int _count)
+    {
+        GameObject mapCam = GameObject.Find("Map Camera") as GameObject;
+        if (null != playerCam && null != player)
         {
-            ""name"": ""PlayerMain"",
-            ""id"": ""ddad5beb-5284-4c92-b001-0807b49da266"",
-            ""actions"": [
-                {
-                    ""name"": ""Move"",
-                    ""type"": ""Value"",
-                    ""id"": ""effbb3c7-f0af-45a9-9739-b09c4475d23f"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Jump"",
-                    ""type"": ""Button"",
-                    ""id"": ""a63e8429-0330-4eb1-b658-6e131524e269"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""LookAround"",
-                    ""type"": ""Value"",
-                    ""id"": ""76fb3ece-63d8-45b0-8009-9ab781bbe787"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""1394ff90-94b7-4529-8de6-3589e47b88c2"",
-                    ""path"": ""<Gamepad>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c680ea1c-b26f-478f-b7d3-794bf7867e17"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""aa9c90e4-b092-420d-9dc0-29235a94508b"",
-                    ""path"": ""<Gamepad>/rightStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""LookAround"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        }
-    ],
-    ""controlSchemes"": []
-}");
-        // PlayerMain
-        m_PlayerMain = asset.FindActionMap("PlayerMain", throwIfNotFound: true);
-        m_PlayerMain_Move = m_PlayerMain.FindAction("Move", throwIfNotFound: true);
-        m_PlayerMain_Jump = m_PlayerMain.FindAction("Jump", throwIfNotFound: true);
-        m_PlayerMain_LookAround = m_PlayerMain.FindAction("LookAround", throwIfNotFound: true);
-    }
+            playerCam.SetActive(true);
 
-    public void Dispose()
-    {
-        UnityEngine.Object.Destroy(asset);
-    }
-
-    public InputBinding? bindingMask
-    {
-        get => asset.bindingMask;
-        set => asset.bindingMask = value;
-    }
-
-    public ReadOnlyArray<InputDevice>? devices
-    {
-        get => asset.devices;
-        set => asset.devices = value;
-    }
-
-    public ReadOnlyArray<InputControlScheme> controlSchemes => asset.controlSchemes;
-
-    public bool Contains(InputAction action)
-    {
-        return asset.Contains(action);
-    }
-
-    public IEnumerator<InputAction> GetEnumerator()
-    {
-        return asset.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    public void Enable()
-    {
-        asset.Enable();
-    }
-
-    public void Disable()
-    {
-        asset.Disable();
-    }
-
-    // PlayerMain
-    private readonly InputActionMap m_PlayerMain;
-    private IPlayerMainActions m_PlayerMainActionsCallbackInterface;
-    private readonly InputAction m_PlayerMain_Move;
-    private readonly InputAction m_PlayerMain_Jump;
-    private readonly InputAction m_PlayerMain_LookAround;
-    public struct PlayerMainActions
-    {
-        private @Player m_Wrapper;
-        public PlayerMainActions(@Player wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_PlayerMain_Move;
-        public InputAction @Jump => m_Wrapper.m_PlayerMain_Jump;
-        public InputAction @LookAround => m_Wrapper.m_PlayerMain_LookAround;
-        public InputActionMap Get() { return m_Wrapper.m_PlayerMain; }
-        public void Enable() { Get().Enable(); }
-        public void Disable() { Get().Disable(); }
-        public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(PlayerMainActions set) { return set.Get(); }
-        public void SetCallbacks(IPlayerMainActions instance)
-        {
-            if (m_Wrapper.m_PlayerMainActionsCallbackInterface != null)
+            switch (_count)
             {
-                @Move.started -= m_Wrapper.m_PlayerMainActionsCallbackInterface.OnMove;
-                @Move.performed -= m_Wrapper.m_PlayerMainActionsCallbackInterface.OnMove;
-                @Move.canceled -= m_Wrapper.m_PlayerMainActionsCallbackInterface.OnMove;
-                @Jump.started -= m_Wrapper.m_PlayerMainActionsCallbackInterface.OnJump;
-                @Jump.performed -= m_Wrapper.m_PlayerMainActionsCallbackInterface.OnJump;
-                @Jump.canceled -= m_Wrapper.m_PlayerMainActionsCallbackInterface.OnJump;
-                @LookAround.started -= m_Wrapper.m_PlayerMainActionsCallbackInterface.OnLookAround;
-                @LookAround.performed -= m_Wrapper.m_PlayerMainActionsCallbackInterface.OnLookAround;
-                @LookAround.canceled -= m_Wrapper.m_PlayerMainActionsCallbackInterface.OnLookAround;
-            }
-            m_Wrapper.m_PlayerMainActionsCallbackInterface = instance;
-            if (instance != null)
-            {
-                @Move.started += instance.OnMove;
-                @Move.performed += instance.OnMove;
-                @Move.canceled += instance.OnMove;
-                @Jump.started += instance.OnJump;
-                @Jump.performed += instance.OnJump;
-                @Jump.canceled += instance.OnJump;
-                @LookAround.started += instance.OnLookAround;
-                @LookAround.performed += instance.OnLookAround;
-                @LookAround.canceled += instance.OnLookAround;
+                case 1:
+                    playerCam.GetComponent<Camera>().rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
+                    player.GetComponent<Player>().SetupPlayerGUI(0, 0);
+                    mapCam.GetComponent<Camera>().rect = new Rect(0.785f, 0.025f, 0.2f, 0.2f);
+                    break;
+
+                case 2:
+                    switch (_index)
+                    {
+                        case 0:
+                            playerCam.GetComponent<Camera>().rect = new Rect(0.0f, 0.0f, 0.5f, 1.0f);
+                            player.GetComponent<Player>().SetupPlayerGUI(0, 0);
+                            break;
+
+                        case 1:
+                            playerCam.GetComponent<Camera>().rect = new Rect(0.5f, 0.0f, 0.5f, 1.0f);
+                            player.GetComponent<Player>().SetupPlayerGUI(0.5f, 0);
+                            break;
+                    }
+                    mapCam.GetComponent<Camera>().rect = new Rect(0.4f, 0.025f, 0.2f, 0.2f);
+                    break;
+
+                case 3:
+                    switch (_index)
+                    {
+                        case 0:
+                            playerCam.GetComponent<Camera>().rect = new Rect(0.0f, 0.5f, 0.5f, 0.5f);
+                            player.GetComponent<Player>().SetupPlayerGUI(0.0f, 0.0f);
+                            break;
+
+                        case 1:
+                            playerCam.GetComponent<Camera>().rect = new Rect(0.5f, 0.5f, 0.5f, 0.5f);
+                            player.GetComponent<Player>().SetupPlayerGUI(0.5f, 0.0f);
+                            break;
+
+                        case 2:
+                            playerCam.GetComponent<Camera>().rect = new Rect(0.0f, 0.0f, 0.5f, 0.5f);
+                            player.GetComponent<Player>().SetupPlayerGUI(0.0f, -0.5f);
+                            break;
+                    }
+                    mapCam.GetComponent<Camera>().rect = new Rect(0.5f, 0.0f, 0.5f, 0.5f);
+                    break;
             }
         }
     }
-    public PlayerMainActions @PlayerMain => new PlayerMainActions(this);
-    public interface IPlayerMainActions
+
+    public void SetupPlayerGUI(float x, float y)
     {
-        void OnMove(InputAction.CallbackContext context);
-        void OnJump(InputAction.CallbackContext context);
-        void OnLookAround(InputAction.CallbackContext context);
+        Canvas canvas = gameObject.GetComponentsInChildren<Canvas>()[0];
+
+        for (int i = 0; i < canvas.transform.childCount; ++i)
+        {
+            Transform child = canvas.transform.GetChild(i);
+            child.transform.position += new Vector3(x * 1280.0f, y * 720.0f, 0.0f);
+        }
+    }
+
+    void Update()
+    {
+        if (!update)
+            return;
+
+        UpdatePlayerLife();
+
+        float speedFactor = 0.25f + 0.75f * GetComponent<Player>().life / 100.0f;
+
+        groundedPlayer = controller.isGrounded;
+        if (groundedPlayer && playerVelocity.y < 0)
+            playerVelocity.y = 0.0f;
+
+        var gamepads = Gamepad.all;
+
+        if (playerIndex >= gamepads.Count)
+            return;
+
+        var pad = gamepads[(int)playerIndex];
+
+        var leftStick = pad.leftStick.ReadValue();
+        var rightStick = pad.rightStick.ReadValue();
+
+        Vector3 direction = new Vector3(leftStick.x, 0.0f, leftStick.y).normalized;
+
+        Vector3 moveDir = new Vector3(0, 0, 0);
+        
+        const float eps = 0.01f;
+
+        if (leftStick.magnitude > eps)
+        {
+            float forward = (-leftStick.y);
+            moveDir = new Vector3(Mathf.Cos(_angle), 0.0f, -Mathf.Sin(_angle)) * speedFactor * forward * (forward > 0 ? moveForwardSpeed : moveBackwardSpeed) * Time.deltaTime;
+        
+            _angle += leftStick.x * rotationSpeed * Time.deltaTime;
+        
+            transform.rotation = Quaternion.Euler(0.0f, _angle * Mathf.Rad2Deg - 90.0f, 0.0f);
+        
+            controller.Move(moveDir);
+        } 
+
+        if (rightStick.magnitude > eps)
+        {
+            freeLookCam.m_YAxis.Value += rightStick.y * cameraRotationSpeed * 0.01f * Time.deltaTime;
+            freeLookCam.m_XAxis.Value += rightStick.x * cameraRotationSpeed * Time.deltaTime;
+        }
+
+        if (pad.buttonSouth.isPressed && groundedPlayer)
+        {
+            playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+            jump.Play();
+        }
+
+        playerVelocity.y += gravityValue * Time.deltaTime; 
+
+        controller.Move(playerVelocity * Time.deltaTime);
+
+        if (transform.position.y < -255)
+        {
+            transform.position = _depart + new Vector3(0,8,0);
+            playerVelocity.y = 0;
+            GetComponent<Player>().life = 100;
+        }
+
+        UpdateShoot();
+    }
+
+    void UpdateShoot()
+    {
+        var gamepads = Gamepad.all;
+
+        if (playerIndex >= gamepads.Count)
+            return;
+
+        var pad = gamepads[(int)playerIndex];
+
+        float shootWait = Mathf.Lerp(100.0f * wait, wait, GetComponent<Player>().life / 100.0f);
+
+        if (pad.buttonWest.isPressed)
+        {
+            var t = Time.realtimeSinceStartup;
+            var delta = t - lastTime;
+
+            if (delta > shootWait)
+            {
+                lastTime = Time.realtimeSinceStartup;
+
+                GameObject instBullet = Instantiate(bullet, transform.position + transform.forward * 0.75f, Quaternion.identity) as GameObject;
+                instBullet.GetComponent<Rigidbody>().velocity = transform.forward * speed;
+
+                Bullet bulletAI = instBullet.GetComponent<Bullet>();
+                bulletAI.update = true;
+
+                if (!zap.isPlaying)
+                    zap.Play();
+            }
+        }
+    }
+
+    void UpdatePlayerLife()
+    {
+        Canvas canvas = gameObject.GetComponentsInChildren<Canvas>()[0];
+
+        GameObject text = canvas.transform.Find("PlayerText").gameObject;
+        text.GetComponent<Text>().text = nickname + " " + score + " " + life + "%";
+
+        Transform mesh = gameObject.transform.Find("Mesh");
+        if (null != mesh)
+        {
+            MeshRenderer meshRenderer = mesh.GetComponent<MeshRenderer>();
+
+            List<Material> mats = new List<Material>();
+            meshRenderer.GetMaterials(mats);
+
+            mats[0].color = Color.Lerp(new Color(1, 1, 1), color, life / 100.0f);
+        }
+
+        // restore life
+        life += 10.00f * Time.deltaTime;
+        life = Mathf.Clamp(life, 0.0f, 100.0f);
     }
 }

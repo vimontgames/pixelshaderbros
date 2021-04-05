@@ -6,6 +6,7 @@ public class Ennemy : MonoBehaviour
 {
     public bool update = true;
 
+    public AudioSource jump;
     public AudioSource takeDamage;
     public AudioSource die;
 
@@ -13,7 +14,8 @@ public class Ennemy : MonoBehaviour
     public float speed = 3.0f;
     public float detectionDist = 256.0f;
 
-    public Color color = new Color(0, 0, 0);
+    public List<Color> colors;
+    public int colorIndex = 0;
 
     [SerializeField]
     private float targetAngle = 0.0f;
@@ -30,9 +32,15 @@ public class Ennemy : MonoBehaviour
 
     public float life = 100.0f;
 
+    [SerializeField]
+    private bool dying = false;
+
+    [SerializeField]
+    private float deathTime = 0.0f;
+
     void Start()
     {
-        
+        colorIndex = Random.Range(0, colors.Count);
     }
 
     public bool getHit(float _amount)
@@ -50,8 +58,12 @@ public class Ennemy : MonoBehaviour
             }
             else
             {
+                dying = true;
                 if (!die.isPlaying)
+                {
                     die.Play();
+                }
+                deathTime = Time.realtimeSinceStartup;
             }
         }
 
@@ -71,59 +83,74 @@ public class Ennemy : MonoBehaviour
             velocity.y = 0.0f;
         }
 
-        // Cherche parmi les joueurs le plus proche et qui a le plus de vies
-        var allPlayers = GameObject.FindGameObjectsWithTag("Player");
-
-        GameObject bestTarget = null;
-        float bestScore = -1.0f;
-
-        for (int i = 0; i < allPlayers.Length; ++i)
+        
+        if (dying == true)
         {
-            GameObject player = allPlayers[i];
+            float deltaDeath = Time.realtimeSinceStartup - deathTime;
+            float s = 1.0f - deltaDeath / 1.0f;
+            this.gameObject.transform.localScale = new Vector3(s, s, s);
 
-            float life = player.GetComponent<PlayerUI>().life;
-            float dist = Vector3.Distance(player.transform.position, this.transform.position);
+            if (deltaDeath > 1.0f)
+                Destroy(this.gameObject);
+        }
+        else
+        {
+            var allPlayers = GameObject.FindGameObjectsWithTag("Player");
 
-            float score = life + Mathf.Max(0, detectionDist - dist);
+            GameObject bestTarget = null;
+            float bestScore = -1.0f;
 
-            if ( score > bestScore)
+            for (int i = 0; i < allPlayers.Length; ++i)
             {
-                bestScore = score;
-                bestTarget = player;
+                GameObject player = allPlayers[i];
+                var playerAI = player.GetComponent<Player>();
+
+                if (!playerAI.update || playerAI.life <= 0)
+                    continue;
+
+                float life = playerAI.life;
+                float dist = Vector3.Distance(player.transform.position, this.transform.position);
+
+                float score = life + Mathf.Max(0, detectionDist - dist);
+
+                if (score > bestScore)
+                {
+                    bestScore = score;
+                    bestTarget = player;
+                }
             }
-        }
 
-        if (bestTarget != null && bestTarget != currentTarget)
-        {
-            // target changed
-        }
-
-        bool jump = false;
-
-        if (null != bestTarget)
-        {
-            Vector3 lookAtDir = (bestTarget.transform.position - this.transform.position).normalized;
-
-            if (lookAtDir.y > 0.5f)
-                jump = true;
-
-            targetAngle = Mathf.Atan2(lookAtDir.x, lookAtDir.z) * Mathf.Rad2Deg;
-
-            currentAngle = Mathf.SmoothDampAngle(currentAngle, targetAngle, ref velocityAngle, 0.1f);
-
-            this.transform.rotation = Quaternion.Euler(0.0f, currentAngle, 0.0f);
-
-            if (Mathf.DeltaAngle(currentAngle, targetAngle) < 8.0f)
+            if (bestTarget != null && bestTarget != currentTarget)
             {
-                controller.Move(new Vector3(lookAtDir.x, 0.0f, lookAtDir.z).normalized * speed * speedFactor * Time.deltaTime);
+                // target changed
             }
-        }
 
-       
-        if (jump && grounded)
-        {
-            velocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
-            //jump.Play();
+            bool jump = false;
+
+            if (null != bestTarget)
+            {
+                Vector3 lookAtDir = (bestTarget.transform.position - this.transform.position).normalized;
+
+                if (lookAtDir.y > 0.5f)
+                    jump = true;
+
+                targetAngle = Mathf.Atan2(lookAtDir.x, lookAtDir.z) * Mathf.Rad2Deg;
+
+                currentAngle = Mathf.SmoothDampAngle(currentAngle, targetAngle, ref velocityAngle, 0.1f);
+
+                this.transform.rotation = Quaternion.Euler(0.0f, currentAngle, 0.0f);
+
+                if (Mathf.DeltaAngle(currentAngle, targetAngle) < 8.0f)
+                {
+                    controller.Move(new Vector3(lookAtDir.x, 0.0f, lookAtDir.z).normalized * speed * speedFactor * Time.deltaTime);
+                }
+            }
+
+            if (jump && grounded)
+            {
+                velocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+                //jump.Play();
+            }
         }
 
         velocity.y += gravityValue * Time.deltaTime;
@@ -138,7 +165,7 @@ public class Ennemy : MonoBehaviour
             List<Material> mats = new List<Material>();
             meshRenderer.GetMaterials(mats);
 
-            mats[0].color = Color.Lerp(new Color(1, 1, 1), color, life / 100.0f);
+            mats[0].color = Color.Lerp(new Color(1, 1, 1), colors[colorIndex], life / 100.0f);
         }
     }
 }
