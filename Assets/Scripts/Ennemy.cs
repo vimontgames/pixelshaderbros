@@ -75,6 +75,9 @@ public class Ennemy : MonoBehaviour
         if (!update)
             return;
 
+        if (GameObject.Find("MenuManager").GetComponent<Menu>().Paused)
+            return;
+
         float speedFactor = life / 100.0f;
 
         grounded = controller.isGrounded;

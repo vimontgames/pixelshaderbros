@@ -7,7 +7,14 @@ using UnityEngine.UI;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 
-public class Player : MonoBehaviour
+public class StoredTransform
+{
+    public Vector3 position;
+    public Quaternion rotation;
+    public Vector3 localScale;
+}
+
+    public class Player : MonoBehaviour
 {
     public string nickname = "PlayerName";
     public uint playerIndex = 0;
@@ -16,6 +23,7 @@ public class Player : MonoBehaviour
     public float life = 100;
     public CharacterController controller;
     public bool update = false;
+    public GameObject playerCanvas;
 
     [Header("Camera")]
     public CinemachineFreeLook freeLookCam;
@@ -35,7 +43,7 @@ public class Player : MonoBehaviour
     private float jumpHeight = 4.0f;
     private float gravityValue = -9.81f;
     private float _angle = 0.0f * Mathf.Deg2Rad;
-    private Vector3 _depart;
+    private StoredTransform initTransform;
 
     [Header("Shoot")]
     public GameObject bullet;
@@ -58,8 +66,31 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        _depart = transform.position;
+        initTransform = new StoredTransform();
+
+        initTransform.position = transform.position;
+        initTransform.rotation = transform.rotation;
+        initTransform.localScale = transform.localScale;
+
         StartPostProcess();
+    }
+
+    public void Reinit()
+    {
+        if (null != initTransform)
+        {
+            transform.position = initTransform.position;
+            transform.rotation = initTransform.rotation;
+            transform.localScale = initTransform.localScale;
+        }
+
+        life = 100.0f;
+        lastTime = 0.0f;
+        hitTaken = false;
+        playerVelocity = new Vector3(0, 0, 0);
+        score = 0;
+
+        update = false;
     }
 
     void StartPostProcess()
@@ -138,7 +169,7 @@ public class Player : MonoBehaviour
 
     public void SetupPlayerGUI(float x, float y)
     {
-        Canvas canvas = gameObject.transform.Find("Canvas").GetComponent<Canvas>();
+        Canvas canvas = playerCanvas.GetComponent<Canvas>();
 
         for (int i = 0; i < canvas.transform.childCount; ++i)
         {
@@ -167,11 +198,14 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        UpdatePlayerLife();
+        updatePlayerPostProcess();
+
         if (!update)
             return;
 
-        UpdatePlayerLife();
-        updatePlayerPostProcess();
+        if (GameObject.Find("MenuManager").GetComponent<Menu>().Paused)
+            return;
 
         float speedFactor = 0.25f + 0.75f * GetComponent<Player>().life / 100.0f;
 
@@ -186,6 +220,12 @@ public class Player : MonoBehaviour
 
         var pad = gamepads[(int)playerIndex];
 
+        if (pad.startButton.isPressed)
+        {
+            GameObject menuManager = GameObject.Find("MenuManager");
+            menuManager.GetComponent<Menu>().ShowPauseMenu();
+        }
+
         var leftStick = pad.leftStick.ReadValue();
         var rightStick = pad.rightStick.ReadValue();
 
@@ -193,7 +233,7 @@ public class Player : MonoBehaviour
 
         Vector3 moveDir = new Vector3(0, 0, 0);
         
-        const float eps = 0.01f;
+        const float eps = 0.1f;
 
         if (leftStick.magnitude > eps)
         {
@@ -216,7 +256,7 @@ public class Player : MonoBehaviour
             freeLookCam.m_XAxis.Value += rightStick.x * cameraRotationSpeed * Time.deltaTime;
         }
 
-        if (pad.buttonSouth.isPressed && groundedPlayer)
+        if (pad.buttonEast.isPressed && groundedPlayer)
         {
             playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
             jump.Play();
@@ -226,11 +266,10 @@ public class Player : MonoBehaviour
 
         controller.Move(playerVelocity * Time.deltaTime);
 
-        if (transform.position.y < -255)
+        if (transform.position.y < -100)
         {
-            transform.position = _depart + new Vector3(0,8,0);
-            playerVelocity.y = 0;
-            GetComponent<Player>().life = 100;
+            Reinit();
+            update = true;
         }
 
         UpdateShoot();
@@ -283,7 +322,7 @@ public class Player : MonoBehaviour
 
     void UpdatePlayerLife()
     {
-        Canvas canvas = gameObject.GetComponentsInChildren<Canvas>()[0];
+        Canvas canvas = playerCanvas.GetComponent<Canvas>();
 
         GameObject text = canvas.transform.Find("PlayerText").gameObject;
         text.GetComponent<Text>().text = nickname + " " + score + " " + life + "%";

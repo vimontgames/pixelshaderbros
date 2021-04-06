@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: Vimontgames
+  companyName: VimontGames
   productName: PixelShaderBros
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -127,7 +127,7 @@ PlayerSettings:
     16:10: 1
     16:9: 1
     Others: 1
-  bundleVersion: 0.11
+  bundleVersion: 0.2
   preloadedAssets:
   - {fileID: 11400000, guid: dfd87a3fcc47956418e1cc4d735d079b, type: 2}
   metroInputSource: 0

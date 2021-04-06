@@ -5,25 +5,32 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     public GameObject model;
+    public bool spawn = false;
     private GameObject instance;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        this.gameObject.transform.Find("Shape").gameObject.SetActive(false);
 
-        instance = Instantiate(model, transform.position + new Vector3(0,3,0), transform.rotation) as GameObject;
-
-        var ennemy = instance.GetComponent<Ennemy>();
-        if (ennemy)
-        {
-            ennemy.update = true;
-        }        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (spawn)
+        {
+            this.gameObject.transform.Find("Shape").gameObject.SetActive(false);
+
+            instance = Instantiate(model, transform.position + new Vector3(0, 1, 0), transform.rotation) as GameObject;
+
+            instance.tag = "Ennemy";
+
+            var ennemy = instance.GetComponent<Ennemy>();
+            if (ennemy)
+                ennemy.update = true;
+
+            spawn = false;
+        }
     }
 }

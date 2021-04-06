@@ -22,22 +22,25 @@ public class Bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (update)
+        if (!update)
+            return;
+
+        if (GameObject.Find("MenuManager").GetComponent<Menu>().Paused)
+            return;
+
+        previousPos = transform.position;
+
+        var t = Time.realtimeSinceStartup;
+        var delta = t - spawnTime;
+
+        if (delta > life - 1.0f)
         {
-            previousPos = transform.position;
-
-            var t = Time.realtimeSinceStartup;
-            var delta = t - spawnTime;
-
-            if (delta > life - 1.0f)
-            {
-                float s = (1.0f - (delta - (life-1))) * scale;
-                transform.localScale = new Vector3(s, s, s);
-            }
-
-            if (t - spawnTime > life)
-                Destroy(gameObject);
+            float s = (1.0f - (delta - (life-1))) * scale;
+            transform.localScale = new Vector3(s, s, s);
         }
+
+        if (t - spawnTime > life)
+            Destroy(gameObject);
     }
 
     void OnCollisionEnter(Collision col)

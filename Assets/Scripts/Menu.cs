@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class Menu : MonoBehaviour
 {
     public GameObject menuCam;
-    public GameObject canvas;
     public GameObject mapCam;
-
+    public GameObject mainMenuCanvas;
+    public GameObject pauseMenuCanvas;
     private GameObject credits;
 
     bool loaded = false;
@@ -18,7 +19,17 @@ public class Menu : MonoBehaviour
     public List<GameObject> players;
     int playerCount = 0;
 
+    public bool Paused
+    {
+        get { return pauseMenuCanvas.activeSelf; }
+    }
+
     void Start()
+    {
+        StartMainMenu();
+    }
+
+    public void StartMainMenu()
     {
         if (null != menuCam)
             menuCam.SetActive(true);
@@ -26,8 +37,11 @@ public class Menu : MonoBehaviour
         if (null != mapCam)
             mapCam.SetActive(false);
 
-        if (null != canvas)
-            canvas.SetActive(true);
+        if (null != mainMenuCanvas)
+            mainMenuCanvas.SetActive(true);
+
+        if (null != pauseMenuCanvas)
+            pauseMenuCanvas.SetActive(false);
 
         for (int i = 0; i < 4; ++i)
         {
@@ -35,7 +49,7 @@ public class Menu : MonoBehaviour
             if (null == player)
                 continue;
 
-            player.transform.Find("Canvas").gameObject.SetActive(false);
+            player.transform.Find("PlayerCanvas").gameObject.SetActive(false);
 
             string playerCameraName = "Player " + i + " Camera";
             GameObject playerCam = GameObject.Find(playerCameraName);
@@ -45,8 +59,29 @@ public class Menu : MonoBehaviour
                 playerCam.SetActive(false);
         }
 
-        credits = GameObject.Find("Staff");
-        credits.SetActive(false);
+        if (null == credits)
+        {
+            credits = GameObject.Find("Staff");
+        }
+        if (null != credits)
+            credits.SetActive(false);
+
+        EventSystem eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+        GameObject button1P = GameObject.Find("Button 1P");
+        eventSystem.SetSelectedGameObject(null);
+        eventSystem.SetSelectedGameObject(button1P);
+
+        // reinit players
+        for (int i = 0; i < players.Count; ++i)
+        {
+            GameObject player = players[i];
+            if (null != player)
+            {
+                Player playerAI = player.GetComponent<Player>();
+                playerAI.Reinit();
+                player.SetActive(true);
+            }
+        }
     }
 
     void initGame()
@@ -60,8 +95,8 @@ public class Menu : MonoBehaviour
         if (null != mapCam)
             mapCam.SetActive(true);
 
-        if (null != canvas)
-            canvas.SetActive(false);
+        if (null != mainMenuCanvas)
+            mainMenuCanvas.SetActive(false);
 
         for (int i = 0; i < playerCount; ++i)
         {
@@ -76,7 +111,7 @@ public class Menu : MonoBehaviour
                 playerAI.update = true;
             }
 
-            player.transform.Find("Canvas").gameObject.SetActive(true);
+            player.transform.Find("PlayerCanvas").gameObject.SetActive(true);
         }
     }
 
@@ -113,6 +148,25 @@ public class Menu : MonoBehaviour
             credits.SetActive(true);
     }
 
+    public void Resume()
+    {
+        pauseMenuCanvas.SetActive(false);
+    }
+
+    public void NewGame()
+    {
+        // kill all ennemies
+        GameObject[] ennemies = GameObject.FindGameObjectsWithTag("Ennemy");
+
+        for (int i = 0; i < ennemies.Length; ++i)
+        {
+            GameObject ennemy = ennemies[i];
+            Destroy(ennemy);
+        }
+
+        StartMainMenu();
+    }
+
     private void StartGame(int _playerCount)
     {
         for (int i = 0; i < players.Count; ++i)
@@ -133,5 +187,26 @@ public class Menu : MonoBehaviour
         playerCount = _playerCount;
         loaded = true;
         SceneManager.SetActiveScene(scene);
+
+        // spawn stuff
+        GameObject[] spawners = GameObject.FindGameObjectsWithTag("Respawn");
+        for (int i = 0; i < spawners.Length; ++i)
+        {
+            GameObject spawner = spawners[i];
+            spawner.GetComponent<Spawner>().spawn = true;
+        }
+    }
+
+    public void ShowPauseMenu()
+    {
+        if (pauseMenuCanvas.activeSelf == false)
+        {
+            pauseMenuCanvas.SetActive(true);
+
+            EventSystem eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+            GameObject resume = GameObject.Find("Button Resume");
+            eventSystem.SetSelectedGameObject(null);
+            eventSystem.SetSelectedGameObject(resume);
+        }
     }
 }
