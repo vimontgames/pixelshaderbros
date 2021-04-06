@@ -82,7 +82,6 @@ public class Ennemy : MonoBehaviour
         {
             velocity.y = 0.0f;
         }
-
         
         if (dying == true)
         {
@@ -166,6 +165,14 @@ public class Ennemy : MonoBehaviour
             meshRenderer.GetMaterials(mats);
 
             mats[0].color = Color.Lerp(new Color(1, 1, 1), colors[colorIndex], life / 100.0f);
+        }
+    }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.tag == "Player")
+        {
+            hit.gameObject.GetComponent<Player>().getHit(5.0f);
         }
     }
 }

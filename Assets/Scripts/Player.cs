@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 
 public class Player : MonoBehaviour
 {
@@ -45,10 +47,38 @@ public class Player : MonoBehaviour
     [Header("Sound")]
     public AudioSource jump;
     public AudioSource zap;
+    public AudioSource ouch;
+
+    private Volume postProcess;
+    private ColorAdjustments colorAdustments;
+    private ChromaticAberration chromaticAberration;
+
+    private bool hitTaken = false;
+    private float lastHitTakenTime = 0.0f;
 
     void Start()
     {
         _depart = transform.position;
+        StartPostProcess();
+    }
+
+    void StartPostProcess()
+    {
+        postProcess = GameObject.Find("P" + playerIndex + " Volume").GetComponent<Volume>();
+
+        for (int i = 0; i < postProcess.profile.components.Count; i++)
+        {
+            switch(postProcess.profile.components[i].name)
+            {
+                case "ColorAdjustments(Clone)":
+                    colorAdustments = (ColorAdjustments)postProcess.profile.components[i];
+                    break;
+
+                case "ChromaticAberration(Clone)":
+                    chromaticAberration = (ChromaticAberration)postProcess.profile.components[i];
+                    break;
+            }
+        }
     }
 
     public void SetupPlayerViewportAndCamera(GameObject player, int _index, int _count)
@@ -108,7 +138,7 @@ public class Player : MonoBehaviour
 
     public void SetupPlayerGUI(float x, float y)
     {
-        Canvas canvas = gameObject.GetComponentsInChildren<Canvas>()[0];
+        Canvas canvas = gameObject.transform.Find("Canvas").GetComponent<Canvas>();
 
         for (int i = 0; i < canvas.transform.childCount; ++i)
         {
@@ -117,12 +147,31 @@ public class Player : MonoBehaviour
         }
     }
 
+    public bool getHit(float _damage)
+    {
+        if (life > 0.0f)
+        {
+            life = Mathf.Max(0, life - _damage);
+
+            hitTaken = true;
+            lastHitTakenTime = Time.realtimeSinceStartup;
+
+            if (!ouch.isPlaying)
+                ouch.Play();
+
+            return true;
+        }
+
+        return false;
+    }
+
     void Update()
     {
         if (!update)
             return;
 
         UpdatePlayerLife();
+        updatePlayerPostProcess();
 
         float speedFactor = 0.25f + 0.75f * GetComponent<Player>().life / 100.0f;
 
@@ -151,8 +200,11 @@ public class Player : MonoBehaviour
             float forward = (-leftStick.y);
             moveDir = new Vector3(Mathf.Cos(_angle), 0.0f, -Mathf.Sin(_angle)) * speedFactor * forward * (forward > 0 ? moveForwardSpeed : moveBackwardSpeed) * Time.deltaTime;
         
-            _angle += leftStick.x * rotationSpeed * Time.deltaTime;
-        
+            if (leftStick.y >= -0.1f)
+                _angle += leftStick.x * rotationSpeed * Time.deltaTime;
+            else
+                _angle -= leftStick.x * rotationSpeed * Time.deltaTime;
+
             transform.rotation = Quaternion.Euler(0.0f, _angle * Mathf.Rad2Deg - 90.0f, 0.0f);
         
             controller.Move(moveDir);
@@ -213,6 +265,19 @@ public class Player : MonoBehaviour
                 if (!zap.isPlaying)
                     zap.Play();
             }
+        }
+    }
+
+    void updatePlayerPostProcess()
+    {
+        if (hitTaken)
+        {
+            float delta = Time.realtimeSinceStartup - lastHitTakenTime;
+            float alpha = Mathf.Clamp01(1.0f - delta*4.0f);
+
+            //this.colorAdustments.colorFilter.value = Color.Lerp( new Color(1.0f,1.0f,1.0f), new Color(1.0f,0.0f,0.0f), alpha);
+            this.colorAdustments.saturation.value = Mathf.Clamp((life - 50)*2.0f, -100.0f, 0.0f);
+            this.chromaticAberration.intensity.value = alpha;
         }
     }
 

@@ -10,6 +10,8 @@ public class Menu : MonoBehaviour
     public GameObject canvas;
     public GameObject mapCam;
 
+    private GameObject credits;
+
     bool loaded = false;
     Scene scene;
 
@@ -42,12 +44,18 @@ public class Menu : MonoBehaviour
             else
                 playerCam.SetActive(false);
         }
+
+        credits = GameObject.Find("Staff");
+        credits.SetActive(false);
     }
 
     void initGame()
     {
         if (null != menuCam)
             menuCam.SetActive(false);
+
+        if (null != credits)
+            credits.SetActive(false);
 
         if (null != mapCam)
             mapCam.SetActive(true);
@@ -97,8 +105,29 @@ public class Menu : MonoBehaviour
         StartGame(3);
     }
 
+    public void ShowCredits()
+    {
+        if (credits.activeSelf == true)
+            credits.SetActive(false);
+        else
+            credits.SetActive(true);
+    }
+
     private void StartGame(int _playerCount)
     {
+        for (int i = 0; i < players.Count; ++i)
+        {
+            GameObject player = players[i];
+
+            if (null != player)
+            {
+                if (i < _playerCount)
+                    player.SetActive(true);
+                else
+                    player.SetActive(false);
+            }
+        }
+
         string name = "A600Motherboard";
         scene = SceneManager.GetSceneByName(name);
         playerCount = _playerCount;
