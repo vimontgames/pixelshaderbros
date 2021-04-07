@@ -178,6 +178,23 @@ public class StoredTransform
         }
     }
 
+    void Drop()
+    {
+        if (!controller.isGrounded)
+            return;
+
+        GameObject drop = GameObject.Find("DropNew");
+        GameObject instDrop = Instantiate(drop, transform.position, transform.rotation) as GameObject;
+                   instDrop.tag = "Ennemy";
+
+        var dropAI = instDrop.GetComponent<Drop>();
+            dropAI.update = true;
+            dropAI.color = new Color(color.r, color.g, color.b, 1.0f);
+
+        float s = Random.Range(1.0f, 2.0f);
+        instDrop.transform.localScale = new Vector3(s, 1, s);
+    }
+
     public bool getHit(float _damage)
     {
         if (life > 0.0f)
@@ -188,7 +205,10 @@ public class StoredTransform
             lastHitTakenTime = Time.realtimeSinceStartup;
 
             if (!ouch.isPlaying)
+            {
                 ouch.Play();
+                Drop();
+            }
 
             return true;
         }
@@ -284,7 +304,7 @@ public class StoredTransform
 
         var pad = gamepads[(int)playerIndex];
 
-        float shootWait = Mathf.Lerp(100.0f * wait, wait, GetComponent<Player>().life / 100.0f);
+        float shootWait = Mathf.Lerp(10.0f * wait, wait, GetComponent<Player>().life / 100.0f);
 
         if (pad.buttonWest.isPressed)
         {
@@ -295,7 +315,7 @@ public class StoredTransform
             {
                 lastTime = Time.realtimeSinceStartup;
 
-                GameObject instBullet = Instantiate(bullet, transform.position + transform.forward * 0.75f, Quaternion.identity) as GameObject;
+                GameObject instBullet = Instantiate(bullet, transform.position + transform.forward, Quaternion.identity) as GameObject;
                 instBullet.GetComponent<Rigidbody>().velocity = transform.forward * speed;
 
                 Bullet bulletAI = instBullet.GetComponent<Bullet>();

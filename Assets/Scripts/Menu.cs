@@ -1,9 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Menu : MonoBehaviour
 {
@@ -29,6 +29,36 @@ public class Menu : MonoBehaviour
         StartMainMenu();
     }
 
+    void CheckPluggedPads()
+    {
+        var gamepads = Gamepad.all;
+
+        for (int i = 0; i < 4; ++i)
+        {
+            GameObject player = players[i];
+
+            GameObject buttonP = GameObject.Find("Button " + i + "P");
+
+            if (null == buttonP || null == player || player.GetComponent<Player>().playerIndex >= gamepads.Count)
+            {
+                if (null != buttonP)
+                {
+                    buttonP.GetComponent<Button>().interactable = false;
+                    buttonP.GetComponentInChildren<Text>().color = new Color(1.0f, 1.0f, 1.0f, 0.25f);
+                }
+                continue;
+            }
+            else
+            {
+                if (null != buttonP)
+                {
+                    buttonP.GetComponent<Button>().interactable = true;
+                    buttonP.GetComponentInChildren<Text>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+                }
+            }
+        }
+    }
+
     public void StartMainMenu()
     {
         if (null != menuCam)
@@ -43,9 +73,14 @@ public class Menu : MonoBehaviour
         if (null != pauseMenuCanvas)
             pauseMenuCanvas.SetActive(false);
 
+        CheckPluggedPads();
+
         for (int i = 0; i < 4; ++i)
         {
             GameObject player = players[i];
+
+            GameObject buttonP = GameObject.Find("Button " + i + "P");
+
             if (null == player)
                 continue;
 
@@ -101,6 +136,7 @@ public class Menu : MonoBehaviour
         for (int i = 0; i < playerCount; ++i)
         {
             GameObject player = players[i];
+
             if (null == player)
                 continue;
 
@@ -118,6 +154,8 @@ public class Menu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        CheckPluggedPads();
+
         if (loaded)
         {
             initGame();
@@ -172,7 +210,7 @@ public class Menu : MonoBehaviour
         for (int i = 0; i < players.Count; ++i)
         {
             GameObject player = players[i];
-
+            
             if (null != player)
             {
                 if (i < _playerCount)

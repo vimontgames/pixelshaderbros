@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 
 public class Ennemy : MonoBehaviour
 {
@@ -54,8 +55,11 @@ public class Ennemy : MonoBehaviour
             if (alive)
             {
                 if (!takeDamage.isPlaying)
+                {
                     takeDamage.Play();
-            }
+                    Drop();
+                }
+                }
             else
             {
                 dying = true;
@@ -64,10 +68,29 @@ public class Ennemy : MonoBehaviour
                     die.Play();
                 }
                 deathTime = Time.realtimeSinceStartup;
+
+                Drop();
             }
         }
 
         return life > 0;
+    }
+
+    void Drop()
+    {
+        if (!controller.isGrounded)
+            return;
+
+        GameObject drop = GameObject.Find("DropNew");
+        GameObject instDrop = Instantiate(drop, transform.position, transform.rotation) as GameObject;
+                   instDrop.tag = "Ennemy";
+
+        var dropAI = instDrop.GetComponent<Drop>();
+            dropAI.update = true;
+            dropAI.color = new Color(colors[colorIndex].r, colors[colorIndex].g, colors[colorIndex].b, 1.0f); ;
+
+        float s = Random.Range(1.0f, 2.0f);
+        instDrop.transform.localScale = new Vector3(s, 1, s);
     }
 
     void Update()
@@ -112,6 +135,9 @@ public class Ennemy : MonoBehaviour
 
                 float life = playerAI.life;
                 float dist = Vector3.Distance(player.transform.position, this.transform.position);
+
+                if (dist > detectionDist)
+                    continue;
 
                 float score = life + Mathf.Max(0, detectionDist - dist);
 
