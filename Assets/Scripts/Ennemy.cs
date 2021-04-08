@@ -88,9 +88,6 @@ public class Ennemy : MonoBehaviour
         var dropAI = instDrop.GetComponent<Drop>();
             dropAI.update = true;
             dropAI.color = new Color(colors[colorIndex].r, colors[colorIndex].g, colors[colorIndex].b, 1.0f); ;
-
-        float s = Random.Range(1.0f, 2.0f);
-        instDrop.transform.localScale = new Vector3(s, 1, s);
     }
 
     void Update()

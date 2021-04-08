@@ -11,5 +11,8 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/A600Motherboard.unity
+    guid: 84416e34fadf9754bb511f1e8e55528f
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: dfd87a3fcc47956418e1cc4d735d079b, type: 2}

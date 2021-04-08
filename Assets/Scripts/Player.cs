@@ -189,10 +189,7 @@ public class StoredTransform
 
         var dropAI = instDrop.GetComponent<Drop>();
             dropAI.update = true;
-            dropAI.color = new Color(color.r, color.g, color.b, 1.0f);
-
-        float s = Random.Range(1.0f, 2.0f);
-        instDrop.transform.localScale = new Vector3(s, 1, s);
+            dropAI.color = new Color(color.r, color.g, color.b, 1.0f);        
     }
 
     public bool getHit(float _damage)

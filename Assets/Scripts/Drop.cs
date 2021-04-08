@@ -19,8 +19,11 @@ public class Drop : MonoBehaviour
     {
         spawnTime = Time.realtimeSinceStartup;
 
+        float randomScale = Random.Range(1.0f, 4.0f);
+
         var decalProjector = gameObject.GetComponentInChildren<DecalProjector>();
             decalProjector.material = new Material(decalProjector.material);
+            decalProjector.size = new Vector3(randomScale, randomScale, 1.0f);
 
         SetDropColor(color);
     }
