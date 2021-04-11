@@ -11,12 +11,14 @@ public class Bullet : MonoBehaviour
     float spawnTime;
 
     private Vector3 previousPos = new Vector3();
+    private Main main;
 
     // Start is called before the first frame update
     void Start()
     {
-        spawnTime = Time.realtimeSinceStartup;
+        spawnTime = Time.time;
         transform.localScale = new Vector3(scale, scale, scale);
+        main = GameObject.Find("Main").GetComponent<Main>();
     }
 
     // Update is called once per frame
@@ -25,12 +27,12 @@ public class Bullet : MonoBehaviour
         if (!update)
             return;
 
-        if (GameObject.Find("MenuManager").GetComponent<Menu>().Paused)
+        if (main.Paused)
             return;
 
         previousPos = transform.position;
 
-        var t = Time.realtimeSinceStartup;
+        var t = Time.time;
         var delta = t - spawnTime;
 
         if (delta > life - 1.0f)
@@ -45,7 +47,7 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        //if (col.gameObject != owner)
+        if (col.gameObject != owner)
         {
             if (col.gameObject.tag == "Player")
             {
@@ -60,12 +62,22 @@ public class Bullet : MonoBehaviour
             }  
             else if (col.gameObject.tag == "Ennemy")
             {
-                if (col.gameObject.GetComponent<Ennemy>().getHit(20.0f))
-                    owner.GetComponent<Player>().score += 1000;    
-                else
-                    owner.GetComponent<Player>().score += 10;     
-            }
+                var ennemy = col.gameObject.GetComponent<Ennemy>();
+                if (ennemy)
+                {
+                    if (ennemy.getHit(20.0f))
+                        owner.GetComponent<Player>().score += 1000;
+                    else
+                        owner.GetComponent<Player>().score += 10;
+                }
 
+                var egg = col.gameObject.GetComponent<Egg>();
+                if (egg)
+                {
+                    egg.GetHit();
+                }
+            }
+           
             //var cont = col.gameObject.GetComponent<CharacterController>();
             //if (null != cont)
             //{

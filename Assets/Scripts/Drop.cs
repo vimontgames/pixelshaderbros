@@ -11,19 +11,23 @@ public class Drop : MonoBehaviour
 
     public float lifeTime = 10.0f;
     public float fadeTime = 1.0f;
+    public float scale = 1.0f;
+    public int drawOrder = 0;
 
     private float spawnTime;
 
     // Start is called before the first frame update
     void Start()
     {
-        spawnTime = Time.realtimeSinceStartup;
+        spawnTime = Time.time;
 
-        float randomScale = Random.Range(1.0f, 4.0f);
+        float randomScale = scale;
 
         var decalProjector = gameObject.GetComponentInChildren<DecalProjector>();
             decalProjector.material = new Material(decalProjector.material);
             decalProjector.size = new Vector3(randomScale, randomScale, 1.0f);
+
+        decalProjector.material.SetInt("_DrawOrder", drawOrder);
 
         SetDropColor(color);
     }
@@ -34,7 +38,7 @@ public class Drop : MonoBehaviour
         if (!update)
             return;
 
-        float delta = Time.realtimeSinceStartup - spawnTime;
+        float delta = Time.time - spawnTime;
 
         if (delta > lifeTime)
         {

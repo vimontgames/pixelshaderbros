@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.InputSystem;
 
 public class Ennemy : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class Ennemy : MonoBehaviour
 
     public List<Color> colors;
     public int colorIndex = 0;
+
+    public GameObject mesh;
 
     [SerializeField]
     private float targetAngle = 0.0f;
@@ -39,9 +42,28 @@ public class Ennemy : MonoBehaviour
     [SerializeField]
     private float deathTime = 0.0f;
 
+    public GameObject eggModel;
+    private float eggTimer = 0.0f;
+    private bool active = false;
+    private float spawnEggTime;
+
+    private Main main;
+    private GameObject[] allPlayers;
+
     void Start()
     {
         colorIndex = Random.Range(0, colors.Count);
+        eggModel = GameObject.Find("Egg");
+        eggTimer = Time.time;
+        spawnEggTime = Random.Range(10.0f, 20.0f);
+        main = GameObject.Find("Main").GetComponent<Main>();
+        allPlayers = GameObject.FindGameObjectsWithTag("Player");
+    }
+
+    public void Die()
+    {
+        main.ennemyCount--;
+        Destroy(gameObject);
     }
 
     public bool getHit(float _amount)
@@ -59,7 +81,7 @@ public class Ennemy : MonoBehaviour
                     takeDamage.Play();
                     Drop();
                 }
-                }
+            }
             else
             {
                 dying = true;
@@ -67,13 +89,20 @@ public class Ennemy : MonoBehaviour
                 {
                     die.Play();
                 }
-                deathTime = Time.realtimeSinceStartup;
+                deathTime = Time.time;
 
                 Drop();
             }
         }
 
+        active = true;
+
         return life > 0;
+    }
+
+    void GetHit()
+    {
+        Drop();
     }
 
     void Drop()
@@ -87,7 +116,35 @@ public class Ennemy : MonoBehaviour
 
         var dropAI = instDrop.GetComponent<Drop>();
             dropAI.update = true;
-            dropAI.color = new Color(colors[colorIndex].r, colors[colorIndex].g, colors[colorIndex].b, 1.0f); ;
+            dropAI.color = new Color(colors[colorIndex].r, colors[colorIndex].g, colors[colorIndex].b, 1.0f);
+            dropAI.scale = Random.Range(2.0f, 4.0f);
+            dropAI.drawOrder = 3;
+    }
+
+    protected void OnEnable()
+    {
+        Keyboard.current.onTextInput += OnTextInput;
+    }
+
+    protected void OnDisable()
+    {
+        Keyboard.current.onTextInput -= OnTextInput;
+    }
+
+    private void OnTextInput(char c)
+    {
+        if (c == 'e')
+            SpawnEgg();
+    }
+
+    void SpawnEgg()
+    {
+        GameObject instEgg = Instantiate(eggModel, transform.position, transform.rotation) as GameObject;
+                   instEgg.tag = "Ennemy";
+
+        var eggAI = instEgg.GetComponent<Egg>();
+            eggAI.update = true;
+            eggAI.color = new Color(colors[colorIndex].r, colors[colorIndex].g, colors[colorIndex].b, 1.0f); ;
     }
 
     void Update()
@@ -95,8 +152,14 @@ public class Ennemy : MonoBehaviour
         if (!update)
             return;
 
-        if (GameObject.Find("MenuManager").GetComponent<Menu>().Paused)
+        if (main.Paused)
             return;
+
+        if (transform.position.y < -100)
+        {
+            Die();
+            return;
+        }
 
         float speedFactor = life / 100.0f;
 
@@ -108,17 +171,15 @@ public class Ennemy : MonoBehaviour
         
         if (dying == true)
         {
-            float deltaDeath = Time.realtimeSinceStartup - deathTime;
+            float deltaDeath = Time.time - deathTime;
             float s = 1.0f - deltaDeath / 1.0f;
             this.gameObject.transform.localScale = new Vector3(s, s, s);
 
             if (deltaDeath > 1.0f)
-                Destroy(this.gameObject);
+                Die();
         }
         else
         {
-            var allPlayers = GameObject.FindGameObjectsWithTag("Player");
-
             GameObject bestTarget = null;
             float bestScore = -1.0f;
 
@@ -142,6 +203,8 @@ public class Ennemy : MonoBehaviour
                 {
                     bestScore = score;
                     bestTarget = player;
+
+                    active = true;
                 }
             }
 
@@ -182,7 +245,6 @@ public class Ennemy : MonoBehaviour
 
         controller.Move(velocity * Time.deltaTime);
 
-        Transform mesh = gameObject.transform.Find("Mesh");
         if (null != mesh)
         {
             MeshRenderer meshRenderer = mesh.GetComponent<MeshRenderer>();
@@ -191,6 +253,17 @@ public class Ennemy : MonoBehaviour
             meshRenderer.GetMaterials(mats);
 
             mats[0].color = Color.Lerp(new Color(1, 1, 1), colors[colorIndex], life / 100.0f);
+        }
+
+        if (active && controller.isGrounded && main.ennemyCount < main.maxEnnemyCount)
+        {
+            float deltaEgg = Time.time - eggTimer;
+            if (deltaEgg > spawnEggTime)
+            {
+                SpawnEgg();
+                eggTimer = Time.time;
+                spawnEggTime = Random.Range(10.0f, 30.0f);
+            }
         }
     }
 

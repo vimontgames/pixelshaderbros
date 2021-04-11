@@ -63,9 +63,12 @@ public class StoredTransform
 
     private bool hitTaken = false;
     private float lastHitTakenTime = 0.0f;
+    private Main main;
 
     void Start()
     {
+        main = GameObject.Find("Main").GetComponent<Main>();
+
         initTransform = new StoredTransform();
 
         initTransform.position = transform.position;
@@ -189,7 +192,9 @@ public class StoredTransform
 
         var dropAI = instDrop.GetComponent<Drop>();
             dropAI.update = true;
-            dropAI.color = new Color(color.r, color.g, color.b, 1.0f);        
+            dropAI.color = new Color(color.r, color.g, color.b, 1.0f);
+            dropAI.scale = Random.Range(2.0f, 4.0f);
+            dropAI.drawOrder = 9;
     }
 
     public bool getHit(float _damage)
@@ -199,7 +204,7 @@ public class StoredTransform
             life = Mathf.Max(0, life - _damage);
 
             hitTaken = true;
-            lastHitTakenTime = Time.realtimeSinceStartup;
+            lastHitTakenTime = Time.time;
 
             if (!ouch.isPlaying)
             {
@@ -221,7 +226,7 @@ public class StoredTransform
         if (!update)
             return;
 
-        if (GameObject.Find("MenuManager").GetComponent<Menu>().Paused)
+        if (main.GetComponent<Main>().Paused)
             return;
 
         float speedFactor = 0.25f + 0.75f * GetComponent<Player>().life / 100.0f;
@@ -238,10 +243,7 @@ public class StoredTransform
         var pad = gamepads[(int)playerIndex];
 
         if (pad.startButton.isPressed)
-        {
-            GameObject menuManager = GameObject.Find("MenuManager");
-            menuManager.GetComponent<Menu>().ShowPauseMenu();
-        }
+            main.EnterPauseMenu();
 
         var leftStick = pad.leftStick.ReadValue();
         var rightStick = pad.rightStick.ReadValue();
@@ -255,7 +257,16 @@ public class StoredTransform
         if (leftStick.magnitude > eps)
         {
             float forward = (-leftStick.y);
-            moveDir = new Vector3(Mathf.Cos(_angle), 0.0f, -Mathf.Sin(_angle)) * speedFactor * forward * (forward > 0 ? moveForwardSpeed : moveBackwardSpeed) * Time.deltaTime;
+
+            float sp = moveForwardSpeed;
+
+            if (forward < 0.0f)
+                sp = moveBackwardSpeed;
+
+            if (pad.buttonSouth.isPressed)
+                sp = sp * 2.0f;
+
+            moveDir = new Vector3(Mathf.Cos(_angle), 0.0f, -Mathf.Sin(_angle)) * speedFactor * forward * sp * Time.deltaTime;
         
             if (leftStick.y >= -0.1f)
                 _angle += leftStick.x * rotationSpeed * Time.deltaTime;
@@ -305,12 +316,12 @@ public class StoredTransform
 
         if (pad.buttonWest.isPressed)
         {
-            var t = Time.realtimeSinceStartup;
+            var t = Time.time;
             var delta = t - lastTime;
 
             if (delta > shootWait)
             {
-                lastTime = Time.realtimeSinceStartup;
+                lastTime = t;
 
                 GameObject instBullet = Instantiate(bullet, transform.position + transform.forward, Quaternion.identity) as GameObject;
                 instBullet.GetComponent<Rigidbody>().velocity = transform.forward * speed;
@@ -328,7 +339,7 @@ public class StoredTransform
     {
         if (hitTaken)
         {
-            float delta = Time.realtimeSinceStartup - lastHitTakenTime;
+            float delta = Time.time - lastHitTakenTime;
             float alpha = Mathf.Clamp01(1.0f - delta*4.0f);
 
             //this.colorAdustments.colorFilter.value = Color.Lerp( new Color(1.0f,1.0f,1.0f), new Color(1.0f,0.0f,0.0f), alpha);
@@ -356,7 +367,7 @@ public class StoredTransform
         }
 
         // restore life
-        life += 10.00f * Time.deltaTime;
+        life += 16.00f * Time.deltaTime;
         life = Mathf.Clamp(life, 0.0f, 100.0f);
     }
 }

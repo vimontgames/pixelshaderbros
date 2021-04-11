@@ -5,12 +5,16 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class Menu : MonoBehaviour
+public class Main : MonoBehaviour
 {
     public GameObject menuCam;
     public GameObject mapCam;
     public GameObject mainMenuCanvas;
     public GameObject pauseMenuCanvas;
+
+    public int ennemyCount = 0;
+    public int maxEnnemyCount = 25;
+
     private GameObject credits;
 
     bool loaded = false;
@@ -188,7 +192,7 @@ public class Menu : MonoBehaviour
 
     public void Resume()
     {
-        pauseMenuCanvas.SetActive(false);
+        ExitPauseMenu();
     }
 
     public void NewGame()
@@ -199,7 +203,7 @@ public class Menu : MonoBehaviour
         for (int i = 0; i < ennemies.Length; ++i)
         {
             GameObject ennemy = ennemies[i];
-            Destroy(ennemy);
+            ennemy.GetComponent<Ennemy>().Die(); ;
         }
 
         StartMainMenu();
@@ -207,6 +211,8 @@ public class Menu : MonoBehaviour
 
     private void StartGame(int _playerCount)
     {
+        Time.timeScale = 1.0f;
+
         for (int i = 0; i < players.Count; ++i)
         {
             GameObject player = players[i];
@@ -231,11 +237,11 @@ public class Menu : MonoBehaviour
         for (int i = 0; i < spawners.Length; ++i)
         {
             GameObject spawner = spawners[i];
-            spawner.GetComponent<Spawner>().spawn = true;
+            spawner.GetComponent<SpawnPoint>().spawn = true;
         }
     }
 
-    public void ShowPauseMenu()
+    public void EnterPauseMenu()
     {
         if (pauseMenuCanvas.activeSelf == false)
         {
@@ -245,6 +251,16 @@ public class Menu : MonoBehaviour
             GameObject resume = GameObject.Find("Button Resume");
             eventSystem.SetSelectedGameObject(null);
             eventSystem.SetSelectedGameObject(resume);
+            Time.timeScale = 0.0f;
+        }
+    }
+
+    public void ExitPauseMenu()
+    {
+        if (pauseMenuCanvas.activeSelf == true)
+        {
+            pauseMenuCanvas.SetActive(false);
+            Time.timeScale = 1.0f;
         }
     }
 }
