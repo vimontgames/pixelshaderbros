@@ -69,3 +69,87 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/VolumeOverrides.asset.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/VolumeOverrides.asset
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Textures/Unity-1200X630.png.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Textures/Unity-1200X630.png
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Textures/particle_normalmap.png.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Textures/particle_normalmap.png
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Textures/Flipbook.psd.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Textures/Flipbook.psd
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Textures.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/SoftParticles.shadersubgraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/SoftParticles.shadersubgraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/ParticleVertexColor.shadersubgraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/ParticleVertexColor.shadersubgraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/ParticleFlipbookBlending.shadersubgraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/ParticleFlipbookBlending.shadersubgraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/ParticleDistortion.shadersubgraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/ParticleDistortion.shadersubgraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/ParticleCameraFade.shadersubgraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs/ParticleCameraFade.shadersubgraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/Subgraphs.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitSoft.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitSoft.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitFlipbookCameraFading.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitFlipbookCameraFading.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitFlipbook.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitFlipbook.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitDistortion.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitDistortion.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitCameraFading.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlitCameraFading.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlit.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleUnlit.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitSoft.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitSoft.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitFlipbookCameraFading.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitFlipbookCameraFading.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitFlipbook.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitFlipbook.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitDistortion.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitDistortion.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitCameraFading.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLitCameraFading.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLit.shadergraph.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders/ParticleLit.shadergraph
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Shaders.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Scenes/ParticleShaderGraphsSampleScene.unity.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Scenes/ParticleShaderGraphsSampleScene.unity
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Scenes.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/ParticleSystem RenderPipelineAsset.asset.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/ParticleSystem RenderPipelineAsset.asset
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitSoft.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitSoft.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitFlipbookCameraFading.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitFlipbookCameraFading.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitFlipbook.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitFlipbook.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitDistortion.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitDistortion.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitCameraFading.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/UnlitCameraFading.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/Unlit.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/Unlit.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitSoft.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitSoft.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitFlipbookCameraFading.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitFlipbookCameraFading.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitFlipbook.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitFlipbook.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitDistortion.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitDistortion.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitCameraFading.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/LitCameraFading.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/Lit.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/Lit.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/Blocker.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/Blocker.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/Background.mat.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials/Background.mat
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/Materials.meta
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples/.sample.json
+Assets/Samples/High Definition RP/11.0.0/Particle System Shader Samples.meta
+Assets/Samples/High Definition RP/11.0.0.meta
+Assets/Samples/High Definition RP.meta
+Assets/Samples.meta

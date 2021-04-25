@@ -203,7 +203,9 @@ public class Main : MonoBehaviour
         for (int i = 0; i < ennemies.Length; ++i)
         {
             GameObject ennemy = ennemies[i];
-            ennemy.GetComponent<Ennemy>().Die(); ;
+            var en = ennemy.GetComponent<Ennemy>();
+            if (null != en)
+                en.Die(); ;
         }
 
         StartMainMenu();

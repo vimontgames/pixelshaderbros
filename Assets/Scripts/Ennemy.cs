@@ -30,7 +30,7 @@ public class Ennemy : MonoBehaviour
     GameObject currentTarget = null;
 
     private bool grounded;
-    private Vector3 velocity = new Vector3(0, 0, 0);
+    public Vector3 velocity = new Vector3(0, 0, 0);
     private float jumpHeight = 4.0f;
     private float gravityValue = -9.81f;
 
@@ -241,7 +241,9 @@ public class Ennemy : MonoBehaviour
             }
         }
 
+        velocity.x *= 0.95f;
         velocity.y += gravityValue * Time.deltaTime;
+        velocity.z *= 0.95f;
 
         controller.Move(velocity * Time.deltaTime);
 

@@ -218,6 +218,12 @@ public class StoredTransform
         return false;
     }
 
+    void NewLife()
+    {
+        Reinit();
+        update = true;
+    }
+
     void Update()
     {
         UpdatePlayerLife();
@@ -268,7 +274,7 @@ public class StoredTransform
 
             moveDir = new Vector3(Mathf.Cos(_angle), 0.0f, -Mathf.Sin(_angle)) * speedFactor * forward * sp * Time.deltaTime;
         
-            if (leftStick.y >= -0.1f)
+            if (leftStick.y >= -0.05f)
                 _angle += leftStick.x * rotationSpeed * Time.deltaTime;
             else
                 _angle -= leftStick.x * rotationSpeed * Time.deltaTime;
@@ -296,8 +302,7 @@ public class StoredTransform
 
         if (transform.position.y < -100)
         {
-            Reinit();
-            update = true;
+            NewLife();
         }
 
         UpdateShoot();
@@ -366,8 +371,15 @@ public class StoredTransform
             mats[0].color = Color.Lerp(new Color(1, 1, 1), color, life / 100.0f);
         }
 
-        // restore life
-        life += 16.00f * Time.deltaTime;
-        life = Mathf.Clamp(life, 0.0f, 100.0f);
+        if (life <= 0)
+        {
+            NewLife();
+        }
+        else
+        {
+            // restore life
+            life += 16.00f * Time.deltaTime;
+            life = Mathf.Clamp(life, 0.0f, 100.0f);
+        }
     }
 }
