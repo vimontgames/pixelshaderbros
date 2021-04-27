@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Entities;
 
 public class SpawnPoint : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class SpawnPoint : MonoBehaviour
     private GameObject instance;
     private Main main;
     private GameObject[] allPlayers;
+    public bool useDOTS = false;
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +28,15 @@ public class SpawnPoint : MonoBehaviour
     void Update()
     {
         bool doSpawn = spawn && main.ennemyCount < main.maxEnnemyCount;
+
+        //if (useDOTS)
+        //{
+        //    EntityManager entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
+        //
+        //    entityManager.CreateEntity();
+        //
+        //    return;
+        //}
 
         if (doSpawn == true)
         {
@@ -64,6 +75,7 @@ public class SpawnPoint : MonoBehaviour
             if (null != model)
             {
                 instance = Instantiate(model, transform.position + new Vector3(0, 1, 0), transform.rotation) as GameObject;
+                instance.SetActive(true);
 
                 instance.tag = "Ennemy";
 
@@ -74,9 +86,7 @@ public class SpawnPoint : MonoBehaviour
                     config.main.ennemyCount++;
 
                     if (spiral)
-                    {
                         ennemy.velocity = this.transform.forward * 10.0f;
-                    }
 
                     spawnLastTime = Time.time;
                 }

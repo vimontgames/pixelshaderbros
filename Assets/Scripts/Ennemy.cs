@@ -58,6 +58,9 @@ public class Ennemy : MonoBehaviour
         spawnEggTime = Random.Range(10.0f, 20.0f);
         main = GameObject.Find("Main").GetComponent<Main>();
         allPlayers = GameObject.FindGameObjectsWithTag("Player");
+
+        if (update == false)
+            gameObject.SetActive(false);
     }
 
     public void Die()
